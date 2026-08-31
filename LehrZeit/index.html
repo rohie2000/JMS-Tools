@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#eaeef9">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="LehrZeit">
+  <title>LehrZeit</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand-block">
+        <div class="brand-mark" aria-hidden="true">LZ</div>
+        <div>
+          <h1>LehrZeit</h1>
+          <p>Arbeitszeit für Lehrkräfte</p>
+        </div>
+      </div>
+      <button id="installBtn" class="ghost hidden">Installieren</button>
+    </header>
+
+    <main>
+      <section id="tab-entry" class="tab active">
+        <div class="hero-summary">
+          <div>
+            <span class="eyebrow">Heute erfasst</span>
+            <strong id="heroTodayTotal">0:00 h</strong>
+          </div>
+          <div class="hero-badge">lokal gespeichert</div>
+        </div>
+
+        <div class="card entry-card">
+          <div class="section-title entry-heading">
+            <div>
+              <span class="eyebrow">Neuer Eintrag</span>
+              <h2>Arbeitszeit erfassen</h2>
+            </div>
+            <span class="school-accent-dot" aria-hidden="true"></span>
+          </div>
+
+          <label>Datum
+            <input id="date" type="date">
+          </label>
+
+          <label>Tätigkeit
+            <select id="category"></select>
+          </label>
+
+          <div class="segmented">
+            <button id="modeTimes" class="seg active">Beginn / Ende</button>
+            <button id="modeDuration" class="seg">Dauer</button>
+          </div>
+
+          <div id="timeFields" class="grid2">
+            <label>Beginn
+              <input id="startTime" type="time">
+            </label>
+            <label>Ende
+              <input id="endTime" type="time">
+            </label>
+          </div>
+
+          <div id="durationFields" class="hidden">
+            <label>Dauer in Minuten
+              <input id="durationMinutes" type="number" min="1" step="5" placeholder="z. B. 45">
+            </label>
+            <div class="quick-duration" aria-label="Schnellauswahl Dauer">
+              <button type="button" class="quick-btn" data-minutes="5">5 Min.</button>
+              <button type="button" class="quick-btn" data-minutes="15">15 Min.</button>
+              <button type="button" class="quick-btn" data-minutes="30">30 Min.</button>
+              <button type="button" class="quick-btn" data-minutes="45">45 Min.</button>
+              <button type="button" class="quick-btn" data-minutes="60">60 Min.</button>
+            </div>
+          </div>
+
+          <label>Notiz <span class="muted">(optional)</span>
+            <textarea id="note" rows="3" placeholder="z. B. Elterntelefonat, Materialerstellung …"></textarea>
+          </label>
+
+          <div class="actions">
+            <button id="saveBtn" class="primary"><span class="btn-icon">＋</span> Eintrag speichern</button>
+            <button id="cancelEditBtn" class="secondary hidden">Bearbeiten abbrechen</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title">
+            <h2>Letzte Einträge</h2>
+            <span id="todayTotal" class="pill">0:00 h heute</span>
+          </div>
+          <div id="entryList" class="entry-list"></div>
+        </div>
+      </section>
+
+      <section id="tab-overview" class="tab">
+        <div class="card">
+          <h2>Übersicht</h2>
+          <div class="stats">
+            <div class="stat"><span>Heute</span><strong id="sumToday">0:00 h</strong></div>
+            <div class="stat"><span>Diese Woche</span><strong id="sumWeek">0:00 h</strong></div>
+            <div class="stat"><span>Dieser Monat</span><strong id="sumMonth">0:00 h</strong></div>
+            <div class="stat"><span>Gesamt</span><strong id="sumAll">0:00 h</strong></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title">
+            <h2>Alle Einträge</h2>
+            <select id="filterCategory" class="compact"></select>
+          </div>
+          <div id="allEntryList" class="entry-list"></div>
+        </div>
+      </section>
+
+      <section id="tab-settings" class="tab">
+        <div class="card">
+          <h2>Datensicherung</h2>
+          <p class="muted">Alle Arbeitszeitdaten bleiben auf diesem Gerät gespeichert, solange du sie nicht exportierst.</p>
+          <div class="stack">
+            <button id="exportJsonBtn" class="secondary">JSON-Backup exportieren</button>
+            <label class="file-button">JSON-Backup importieren
+              <input id="importJsonInput" type="file" accept="application/json">
+            </label>
+            <button id="exportCsvBtn" class="secondary">CSV exportieren</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Eigene Kategorie</h2>
+          <div class="inline">
+            <input id="newCategory" type="text" placeholder="z. B. Systembetreuung">
+            <button id="addCategoryBtn" class="secondary">Hinzufügen</button>
+          </div>
+          <div id="customCategories" class="chips"></div>
+        </div>
+
+        <div class="card danger-card">
+          <h2>Daten löschen</h2>
+          <p class="muted">Löscht alle Einträge ausschließlich auf diesem Gerät.</p>
+          <button id="clearDataBtn" class="danger">Alle Arbeitszeitdaten löschen</button>
+        </div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav">
+      <button data-tab="entry" class="nav-item active"><span>＋</span>Erfassen</button>
+      <button data-tab="overview" class="nav-item"><span>▦</span>Übersicht</button>
+      <button data-tab="settings" class="nav-item"><span>⚙</span>Einstellungen</button>
+    </nav>
+  </div>
+
+  <template id="entryTemplate">
+    <article class="entry">
+      <div class="entry-main">
+        <div class="entry-topline">
+          <strong class="entry-category"></strong>
+          <span class="entry-duration"></span>
+        </div>
+        <div class="entry-meta"></div>
+        <div class="entry-note"></div>
+      </div>
+      <div class="entry-actions">
+        <button class="mini edit">Bearbeiten</button>
+        <button class="mini duplicate">Duplizieren</button>
+        <button class="mini delete">Löschen</button>
+      </div>
+    </article>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
