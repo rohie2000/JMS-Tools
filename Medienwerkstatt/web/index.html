@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#eaeef9" />
+    <title>JMS Medienwerkstatt</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand-block">
+          <div class="brand-mark" aria-hidden="true">JM</div>
+          <div>
+            <h1>JMS Medienwerkstatt</h1>
+            <p>Medien lokal herunterladen und vorbereiten</p>
+          </div>
+        </div>
+        <span id="sourceBadge" class="source-badge" aria-live="polite">URL einfügen</span>
+      </header>
+
+      <nav class="tool-nav" aria-label="Werkzeug auswählen">
+        <button class="tool-tab active" type="button" data-tool="download">↓ Herunterladen</button>
+        <button class="tool-tab" type="button" data-tool="convert">♫ Konvertieren</button>
+      </nav>
+
+      <main>
+        <section id="downloaderPanel" class="tool-panel active">
+        <section class="hero-summary">
+          <div>
+            <span class="eyebrow">Downloader</span>
+            <strong>YouTube &amp; Instagram</strong>
+          </div>
+          <span class="hero-badge">lokal auf diesem Gerät</span>
+        </section>
+
+        <section class="card">
+          <div class="section-title entry-heading">
+            <div>
+              <span class="eyebrow">Neuer Auftrag</span>
+              <h2>Medium herunterladen</h2>
+            </div>
+            <span class="school-accent-dot" aria-hidden="true"></span>
+          </div>
+
+          <label for="url">Link zu YouTube oder Instagram
+            <input id="url" type="url" inputmode="url" autocomplete="off" placeholder="https://…" />
+          </label>
+          <p id="sourceHint" class="field-hint">Unterstützt öffentliche YouTube-Videos und Instagram-Beiträge bzw. Reels.</p>
+
+          <div class="segmented" aria-label="Ausgabeformat">
+            <button class="seg active" type="button" data-output="video">Video · MP4</button>
+            <button class="seg" type="button" data-output="mp3">Audio · MP3</button>
+            <button class="seg" type="button" data-output="m4a">Audio · M4A</button>
+          </div>
+
+          <label id="qualityLabel" for="quality">Qualität
+            <select id="quality"></select>
+          </label>
+
+          <label for="filename">Dateiname <span class="muted">(optional)</span>
+            <input id="filename" type="text" maxlength="120" placeholder="Sonst wird der Titel des Mediums verwendet" />
+          </label>
+
+          <details class="advanced">
+            <summary>Ausschnitt auswählen <span>optional</span></summary>
+            <div class="grid2">
+              <label for="startTime">Startzeit
+                <input id="startTime" type="text" inputmode="decimal" placeholder="z. B. 1:30" />
+              </label>
+              <label for="endTime">Endzeit
+                <input id="endTime" type="text" inputmode="decimal" placeholder="z. B. 3:45" />
+              </label>
+            </div>
+            <p class="field-hint">Format: Minuten:Sekunden oder Stunden:Minuten:Sekunden.</p>
+          </details>
+
+          <label for="outputDir">Zielordner
+            <div class="folder-row">
+              <input id="outputDir" type="text" autocomplete="off" />
+              <button id="chooseFolder" class="secondary" type="button">Ordner wählen</button>
+            </div>
+          </label>
+
+          <button id="download" class="primary" type="button"><span class="btn-icon">↓</span> Download starten</button>
+          <p class="permission-note">Bitte nur Inhalte herunterladen oder verarbeiten, für deren Nutzung du die nötige Berechtigung hast.</p>
+        </section>
+        </section>
+
+        <section id="converterPanel" class="tool-panel">
+          <section class="hero-summary converter-hero">
+            <div>
+              <span class="eyebrow">Audio-Werkzeug</span>
+              <strong>Dateien in MP3 umwandeln</strong>
+            </div>
+            <span class="hero-badge">mehrere Dateien möglich</span>
+          </section>
+
+          <section class="card">
+            <div class="section-title entry-heading">
+              <div>
+                <span class="eyebrow">Konvertieren</span>
+                <h2>Audio oder Video als MP3</h2>
+              </div>
+              <span class="school-accent-dot" aria-hidden="true"></span>
+            </div>
+            <p class="field-hint">Unterstützt unter anderem M4A, AAC, WAV, FLAC, OGG, MP4 und M4V. Geschützte DRM-Dateien können nicht konvertiert werden.</p>
+
+            <button id="chooseFiles" class="secondary choose-files" type="button">Dateien auswählen</button>
+            <div id="converterFiles" class="selected-files">Noch keine Dateien ausgewählt.</div>
+
+            <label for="bitrate">MP3-Qualität
+              <select id="bitrate">
+                <option value="128k">128 kbit/s – klein</option>
+                <option value="160k">160 kbit/s</option>
+                <option value="192k" selected>192 kbit/s – empfohlen</option>
+                <option value="256k">256 kbit/s – sehr gut</option>
+                <option value="320k">320 kbit/s – beste Qualität</option>
+              </select>
+            </label>
+
+            <label for="converterOutputDir">Zielordner
+              <div class="folder-row">
+                <input id="converterOutputDir" type="text" autocomplete="off" />
+                <button id="converterChooseFolder" class="secondary" type="button">Ordner wählen</button>
+              </div>
+            </label>
+
+            <button id="convert" class="primary" type="button"><span class="btn-icon">♫</span> In MP3 konvertieren</button>
+          </section>
+        </section>
+
+        <section class="card progress-card">
+          <div class="section-title">
+            <div>
+              <span class="eyebrow">Status</span>
+              <h2>Fortschritt</h2>
+            </div>
+            <button id="clear" class="mini" type="button">Leeren</button>
+          </div>
+          <pre id="log" aria-live="polite">Bereit.</pre>
+        </section>
+
+        <section id="dependencyNote" class="dependency-note hidden"></section>
+      </main>
+
+      <footer>Weitere Werkzeuge folgen: Schneiden · Wiederholen · Lautstärke normalisieren · Komprimieren</footer>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>
