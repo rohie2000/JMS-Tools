@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "cards": [
+    {
+      "id": "demo-schraube",
+      "title": "Die Sechskantschraube",
+      "category": "Werken",
+      "text": "Nimm die Sechskantschraube.\n\nSchraube sie auf der Gewindestange fest."
+    },
+    {
+      "id": "demo-lernwerkstatt",
+      "title": "Wir entdecken Körper",
+      "category": "Mathematik · Lernwerkstatt",
+      "text": "Heute untersuchst du verschiedene Körper. Lege einen Würfel, einen Quader und eine Kugel vor dich auf den Tisch.\n\n1. Nimm den Würfel in die Hand. Schau ihn von allen Seiten an. Wie viele Flächen kannst du zählen?\n\n2. Vergleiche den Würfel mit dem Quader. Was ist gleich? Was ist anders? Erzähle es deinem Lernpartner.\n\n3. Lege die Kugel auf den Tisch. Schiebe sie vorsichtig an. Überlege: Warum kann die Kugel rollen?\n\n4. Suche im Klassenraum einen Gegenstand, der wie ein Quader aussieht. Zeichne ihn in dein Heft.\n\nGeschafft! Höre dir einzelne Aufgaben bei Bedarf noch einmal an."
+    },
+    {
+      "id": "wareneingang-waren-pruefen",
+      "title": "Wareneingang – Waren prüfen",
+      "category": "Lernwerkstatt · Wareneingang",
+      "text": "Arbeitsplatz: Wareneingang.\nWaren prüfen.\n\nDas machst du:\n\nSchritt eins. Nimm die Ware aus dem Eingangskasten.\n\nSchritt zwei. Schau genau hin: Ist alles ganz?\n\nSchritt drei. Erledige deine Aufgabe.\n\nSchritt vier. Lege die Ware in den passenden Kasten."
+    },
+    {
+      "id": "material-pruefen-gute-ware-oder-ausschuss",
+      "title": "Material prüfen – Gute Ware oder Ausschuss",
+      "category": "Lernwerkstatt · Material prüfen",
+      "text": "Arbeitsplatz: Material prüfen.\nGute Ware oder Ausschuss.\n\nDas machst du:\n\nSchritt eins. Prüfe jeden Dübel genau.\n\nSchritt zwei. Ein roter Strich bedeutet: Ausschuss.\n\nSchritt drei. Lege den Ausschuss in die rote Kiste.\n\nSchritt vier. Prüfe auch die Holztafeln: Sind sie ganz?"
+    }
+  ]
+}
