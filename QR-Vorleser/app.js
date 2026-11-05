@@ -1,4 +1,6 @@
 import QrScanner from './vendor/qr-scanner.min.js';
+import { checkTeacherPassword } from './teacher-access.js';
+let teacherUnlocked = false;
 import { mergeCollection, readDeletedIds } from './collection.js?v=2';
 const $ = id => document.getElementById(id);
 const STORAGE = 'jms-qr-cards-v1';
@@ -44,7 +46,7 @@ function speak(text, all = false) {
     const voices = speechSynthesis.getVoices(); const voice = voices.find(v=>v.lang==='de-DE' && v.localService) || voices.find(v=>v.lang.startsWith('de'));
     if(voice) utterance.voice=voice;
     utterance.onend=next;
-    utterance.onerror=e=> { if(run===readRun && e.error!=='canceled' && e.error!=='interrupted') { say('Tippe auf „Vorlesen“, um die Sprachausgabe zu starten. Prüfe bei Bedarf die Lautstärke.'); document.querySelectorAll('.paragraph.active').forEach(p=>p.classList.remove('active')); } };
+    utterance.onerror=e=> { if(run===readRun && e.error!=='canceled' && e.error!=='interrupted') { say('Tippe auf „Jetzt anhören“, um die Sprachausgabe zu starten. Prüfe bei Bedarf die Lautstärke.'); document.querySelectorAll('.paragraph.active').forEach(p=>p.classList.remove('active')); } };
     speechSynthesis.speak(utterance);
   };
   next();
@@ -60,6 +62,10 @@ function showText(card, auto=false) {
     section.append(p,button); $('reading-text').append(section);
   });
   $('speak').disabled=false;
+  $('student').classList.add('has-card'); document.querySelector('.reader').hidden=false;
+  ['section-view','reader-settings'].forEach(id=>$(id).hidden=true);
+  ['toggle-sections','toggle-settings'].forEach(id=>$(id).setAttribute('aria-expanded','false'));
+  $('read-title').focus({preventScroll:true}); window.scrollTo(0,0);
   if(auto && $('auto-speak').checked) speak(currentText,true);
 }
 async function resolveCode(raw, auto=true) {
@@ -79,17 +85,44 @@ async function resolveCode(raw, auto=true) {
     } catch { say('Die veröffentlichte Sammlung konnte nicht geladen werden. Prüfe die Internetverbindung und versuche es erneut.'); return; }
     const card=published.find(c=>c.id===cardId);
     if(!card) { say('Dieser Text ist noch nicht veröffentlicht oder wurde entfernt. Bitte die Lehrkraft fragen.'); return; }
-    showText(card,auto); say('Arbeitskarte geladen. Mit „Vorlesen“ kannst du sie jederzeit anhören.');
+    showText(card,auto); say('');
   } else if(text?.trim()) {
     if(text.length>30000) { say('Dieser Text ist zu lang. Bitte die Lehrkraft fragen.'); return; }
-    showText({title:'Dein QR-Text',text},auto); say('QR-Code erkannt. Dein Text ist bereit.');
+    showText({title:'Dein QR-Text',text},auto); say('');
   }
 }
 function route() {
   stopSpeech(); scanner?.stop(); $('stop-camera').hidden=true; $('camera-placeholder').hidden=false;
-  const teacher=location.hash==='#lehrkraft'; $('teacher').hidden=!teacher; $('student').hidden=teacher; $('status').textContent='';
+  const teacher=location.hash==='#lehrkraft';
+  if(!teacher) teacherUnlocked=false;
+  $('teacher').hidden=!teacher || !teacherUnlocked;
+  $('teacher-login').hidden=!teacher || teacherUnlocked;
+  $('student').hidden=teacher; $('status').textContent='';
+  $('teacher-password').value=''; $('login-error').textContent='';
+  $('teacher-password').type='password'; $('show-password').textContent='Anzeigen'; $('show-password').setAttribute('aria-pressed','false');
+  if(teacher && !teacherUnlocked) $('teacher-password').focus({preventScroll:true});
   if(!teacher && location.hash) resolveCode(location.href,false);
+  else if(!teacher) { $('student').classList.remove('has-card'); document.querySelector('.reader').hidden=true; }
 }
+$('teacher-login-form').onsubmit=async event=> {
+  event.preventDefault();
+  const password=$('teacher-password').value;
+  $('teacher-password').value=''; $('login-error').textContent=''; $('teacher-unlock').disabled=true;
+  try {
+    const valid=await checkTeacherPassword(password);
+    if(location.hash!=='#lehrkraft')return;
+    if(!valid){$('login-error').textContent='Das Kennwort stimmt nicht. Bitte versuche es erneut.';$('teacher-password').focus();return;}
+    teacherUnlocked=true;route();$('new-card').focus({preventScroll:true});window.scrollTo(0,0);
+  }catch{$('login-error').textContent='Die Kennwortprüfung ist nicht verfügbar. Bitte die App über ihre HTTPS-Adresse oder die lokale Vorschau öffnen.';}
+  finally{$('teacher-unlock').disabled=false;}
+};
+$('show-password').onclick=()=> {
+  const show=$('teacher-password').type==='password';
+  $('teacher-password').type=show?'text':'password';$('show-password').textContent=show?'Verbergen':'Anzeigen';$('show-password').setAttribute('aria-pressed',String(show));
+};
+$('teacher-lock').onclick=()=>{stopSpeech();teacherUnlocked=false;route();window.scrollTo(0,0);};
+window.addEventListener('pagehide',()=>{teacherUnlocked=false;});
+window.addEventListener('pageshow',event=>{if(event.persisted)route();});
 $('scan').onclick=async()=> {
   stopSpeech();
   try {
@@ -99,6 +132,16 @@ $('scan').onclick=async()=> {
 };
 $('stop-camera').onclick=()=>{scanner?.stop(); $('stop-camera').hidden=true; $('camera-placeholder').hidden=false;};
 $('scan-file').onchange=async e=> { const file=e.target.files[0]; if(!file)return; scanner?.stop(); try { const result=await QrScanner.scanImage(file,{returnDetailedScanResult:true}); await resolveCode(result.data); } catch { say('In diesem Bild wurde kein lesbarer QR-Code gefunden. Bitte ein schärferes Bild auswählen.'); } e.target.value=''; };
+[['toggle-sections','section-view'],['toggle-settings','reader-settings']].forEach(([button,panel])=> {
+  $(button).onclick=()=> {const open=$(panel).hidden;$(panel).hidden=!open;$(button).setAttribute('aria-expanded',String(open));if(open)$(panel).scrollIntoView({block:'start',behavior:'smooth'});};
+});
+$('next-code').onclick=()=> {
+  stopSpeech(); $('student').classList.remove('has-card'); document.querySelector('.reader').hidden=true;
+  $('status').textContent='';
+  // Clear the old card address so reloading returns to the scanner.
+  history.replaceState(null,'',location.pathname+location.search);
+  $('scan').focus({preventScroll:true});window.scrollTo(0,0);
+};
 $('speak').onclick=()=>speak(currentText,true); $('stop-speech').onclick=()=>{stopSpeech();say('Vorlesen gestoppt.');};
 $('rate').oninput=()=>{$('rate-value').textContent=`${Number($('rate').value).toLocaleString('de-DE')} ×`;};
 function listCards() {

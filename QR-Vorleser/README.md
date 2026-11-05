@@ -18,7 +18,7 @@ Im Projektordner `python3 -m http.server 8765` starten. Dann `http://localhost:8
 
 ## Persönlicher Lehrkräftebereich
 
-Über „Lehrkräftebereich“ bzw. `#lehrkraft` erreichbar. In Version 1 **keine Anmeldung und kein serverseitiges Speichern**. Der Editor ist nach Veröffentlichung öffentlich aufrufbar; Besucher können damit ihre eigenen lokalen Entwürfe bearbeiten, aber nicht die veröffentlichte Sammlung verändern. Keine GitHub-Zugangsdaten werden im Browser gespeichert.
+Über „Lehrkräftebereich“ bzw. `#lehrkraft` erreichbar. Der Editor ist durch eine einfache Kennwortabfrage gesperrt. Die Prüfung erfolgt im Browser, ohne serverseitige Anmeldung. Technisch versierte Besucher können diese Sperre umgehen. Die veröffentlichte Sammlung lässt sich damit nicht verändern; Bearbeitungen werden weiterhin nur lokal gespeichert. Keine GitHub-Zugangsdaten werden im Browser gespeichert.
 
 Entwürfe liegen im lokalen Browserspeicher. Dieser kann beim Löschen von Websitedaten verloren gehen. Regelmäßig die Sammlung exportieren. Ein Export enthält alle gespeicherten Texte, nicht ungespeicherte Eingaben im Editor. Ein Import ersetzt nach Rückfrage die lokale Sammlung vollständig.
 
@@ -69,3 +69,15 @@ Browserprüfung: Beispielkarte mit sechs Hörabschnitten, Öffnen vorhandener Te
 ## Karten löschen
 
 Eine gespeicherte Karte öffnen und „Karte löschen“ wählen. Nach der Rückfrage verschwindet sie aus der lokalen Sammlung. „Löschen rückgängig machen“ stellt die zuletzt gelöschte Karte während derselben Sitzung wieder her. Löschmarkierungen verhindern, dass sie beim Neuladen aus der veröffentlichten Sammlung erneut ergänzt wird. Der Export enthält diese Markierungen. Für Schüler wird eine veröffentlichte Karte erst durch Export und Veröffentlichung der geänderten Sammlung entfernt; ihr gedruckter QR-Code führt dann zu einem Hinweis auf den fehlenden Text. Ein Import einer älteren Sicherung mit der Karte stellt sie wieder her.
+
+## Schüleransicht nach dem Scannen
+
+Kartenlinks und eingelesene QR-Codes öffnen die konzentrierte Vorleseansicht: Kartentitel und großer Play-Button „Jetzt anhören“. Scanner und Start-Einführung sind dort ausgeblendet. Unterhalb führen kleine Bedienelemente zur Arbeitskarte in Hörabschnitten, zu Lesetempo und Einstellungen sowie zum nächsten Scan. Die Abschnitte und Einstellungen sind zunächst zugeklappt. Die bestehenden QR-Adressen bleiben unverändert.
+
+## Einfaches Kennwort für den Lehrkräftebereich
+
+Vor dem Öffnen des Editors erscheint eine Kennwortabfrage, auch beim direkten Aufruf von `#lehrkraft`. Die Freigabe gilt nur für die aktuelle geladene Seite. „Bereich sperren“, der Wechsel zur Schüleransicht und Neuladen sperren den Zugang erneut. Eingaben im Editor bleiben beim Sperren während derselben Sitzung erhalten; zum dauerhaften Sichern vorher speichern oder exportieren.
+
+Das Kennwort wird nicht im Browserspeicher oder als Klartext in den Projektdateien abgelegt. `teacher-access.js` enthält nur seinen SHA-256-Prüfwert. Dieser Schutz ist eine Bedienungssperre und keine echte Authentifizierung; Quelltext und Kartentexte bleiben öffentlich zugänglich. Kein Kennwort verwenden, das auch für andere Dienste genutzt wird.
+
+Kennwort ändern: SHA-256-Prüfwert des neuen App-Kennworts in `teacher-access.js` ersetzen und veröffentlichen. Das ursprünglich eingerichtete Kennwort wurde im Chat mitgeteilt. Die Kennwortprüfung benötigt HTTPS oder localhost.

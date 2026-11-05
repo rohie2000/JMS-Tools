@@ -2,3 +2,30 @@
 @media(max-width:800px){main{padding:28px 18px}.intro p{position:static;font-size:16px}.student-grid,.teacher-grid{grid-template-columns:1fr}.panel{padding:22px}.teacher-heading{display:block}.teacher-heading .button{margin-top:15px}header{padding:16px 18px}.brand{font-size:13px}.brand small{font-size:9px}.teacher-link{font-size:12px}footer{margin:0 20px;gap:15px;flex-wrap:wrap}.qr-layout{flex-wrap:wrap}h1{letter-spacing:-1px}.teacher-heading h1{font-size:34px}}@media print{body>*{display:none!important}#print-area{display:block!important;text-align:center;padding:25mm;font-family:sans-serif}#print-area img{width:70mm;height:70mm}#print-area p{white-space:pre-wrap;font-size:12pt}}
 
 button.danger{color:#a32424;background:#fff1f1;border-color:#e8bdbd}button.danger:hover{background:#ffe6e6}
+
+/* After scanning, the listening action is the primary student view. */
+#student.has-card .intro,#student.has-card .scan-panel,#student.has-card .try{display:none}
+#student.has-card .student-grid{display:block}
+.reader{max-width:780px;margin:0 auto;text-align:center;padding:38px 42px}
+.reader .pill{margin-top:0}
+.reader h1{font-size:clamp(28px,4.5vw,42px);letter-spacing:-1px;line-height:1.2;margin:18px 0 22px;overflow-wrap:anywhere}
+.reader .step{margin-bottom:24px}
+button.listen-button{display:flex;width:100%;min-height:210px;border-radius:24px;gap:28px;padding:28px;font-size:clamp(28px,4vw,38px);text-align:left;box-shadow:0 10px 22px #1269b026}
+.play-symbol{display:grid;place-items:center;flex:0 0 100px;height:100px;background:#ffffff24;border:2px solid #ffffff75;border-radius:50%;font-size:52px;padding-left:7px}
+.listen-button small{display:block;font-size:15px;font-weight:400;line-height:1.5;margin-top:8px}
+.stop-button{margin-top:18px;background:white;color:var(--muted)}
+.listen-hint{color:var(--muted);font-size:14px;margin:18px 0 28px}
+.reader-links{display:flex;justify-content:center;flex-wrap:wrap;gap:4px 20px;border-top:1px solid var(--line);padding-top:20px}
+button.text-link{border:0;background:transparent;color:var(--blue);text-decoration:underline;text-underline-offset:4px;font-size:13px;font-weight:500;padding:8px 2px;min-height:44px}
+.reader-extra{text-align:left;border-top:1px solid var(--line);margin-top:22px;padding-top:12px;scroll-margin-top:20px}
+.reader-extra .tempo{border:0;margin-top:0}.reader-extra .check{justify-content:flex-start}
+@media(max-width:600px){.reader{padding:26px 20px}button.listen-button{min-height:210px;gap:14px;padding:24px 16px;font-size:28px}.play-symbol{flex-basis:74px;height:74px;font-size:38px}.listen-button small{font-size:13px}.reader-links{flex-direction:column;align-items:center}.reader h1{font-size:30px}}
+.student-grid{grid-template-columns:1fr}.scan-panel{width:100%;max-width:780px;margin:0 auto}
+
+.reader h1:focus{outline:none}
+
+.login-panel{max-width:540px;margin:20px auto 60px;padding:32px}
+.login-panel h1{font-size:32px;letter-spacing:-.8px;line-height:1.2}
+.login-panel>p{color:var(--muted);font-size:15px}.password-row{display:flex;align-items:center;gap:8px}.password-row input{min-width:0}.password-row button{margin-top:6px;font-size:13px;background:white}
+.login-error{color:#a32424;font-size:14px;min-height:24px}.login-back{display:inline-block;margin-top:12px;color:var(--blue);font-size:14px}.teacher-heading-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+@media(max-width:600px){.login-panel{padding:24px}.teacher-heading-actions{justify-content:flex-start;margin-top:18px}}

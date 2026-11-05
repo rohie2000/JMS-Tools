@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#1269b0">
 <title>QR-Vorleser · Lernwerkstatt</title>
-<link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="stylesheet" href="styles.css?v=2">
-<script src="vendor/qrcode.js" defer></script><script src="app.js?v=3" type="module"></script>
+<link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="stylesheet" href="styles.css?v=5">
+<script src="vendor/qrcode.js" defer></script><script src="app.js?v=6" type="module"></script>
 </head>
 <body>
 <header><a class="brand" href="./"><span class="brand-icon" aria-hidden="true">▦</span><span>LERNWERKSTATT<small>Jakob-Muth-Schule · JMS-Tools</small></span></a><a class="teacher-link" href="#lehrkraft">Lehrkräftebereich ↗</a></header>
@@ -13,12 +13,38 @@
 <div class="intro"><span class="eyebrow">SELBSTSTÄNDIG LERNEN</span><h1>Scannen. Hören.<br><span>Loslegen.</span></h1><p>Dein QR-Code hat etwas zu sagen.<br>Halte ihn vor die Kamera und höre zu.</p></div>
 <div class="student-grid">
 <section class="panel scan-panel" aria-labelledby="scan-title"><div class="step">01 · QR-CODE EINLESEN</div><h2 id="scan-title">Was möchtest du hören?</h2><div id="camera" class="camera"><video id="video" playsinline muted aria-label="Kamerabild"></video><div id="camera-placeholder"><div class="scan-symbol" aria-hidden="true">▦</div><p>Deine Kamera ist bereit.</p><small>Ein QR-Code genügt.</small></div></div><button id="scan" class="primary wide">▦ &nbsp; QR-Code scannen</button><button id="stop-camera" class="wide" hidden>Kamera schließen</button><label class="file-button">QR-Code als Bild auswählen<input id="scan-file" type="file" accept="image/*" hidden></label><p class="hint">Beim ersten Mal bitte die Kamera erlauben.</p></section>
-<section class="panel reader" aria-labelledby="read-title"><div class="step">02 · ANHÖREN UND VERSTEHEN</div><span id="card-category" class="pill">Dein Hörtext</span><h2 id="read-title">Hier erscheint dein Text.</h2><div id="reading-text" class="reading-text"><p>Scanne einen QR-Code. Dann kannst du den ganzen Text oder einzelne Abschnitte anhören.</p></div><div class="actions"><button id="speak" class="primary" disabled>▶ Vorlesen</button><button id="stop-speech">■ Stopp</button></div><label class="tempo" for="rate">Lesetempo <output id="rate-value">0,9 ×</output><input id="rate" type="range" min="0.5" max="1.3" step="0.1" value="0.9"><span><small>Langsam</small><small>Schnell</small></span></label><label class="check"><input id="auto-speak" type="checkbox" checked> Nach dem Scannen vorlesen</label></section>
+<section class="panel reader" aria-labelledby="read-title" hidden>
+<span id="card-category" class="pill">Dein Hörtext</span>
+<h1 id="read-title" tabindex="-1">Hier erscheint dein Text.</h1>
+<div class="step">ANHÖREN UND VERSTEHEN</div>
+<button id="speak" class="primary listen-button" disabled><span class="play-symbol" aria-hidden="true">▶</span><span>Jetzt anhören<small>Den ganzen Text vorlesen</small></span></button>
+<button id="stop-speech" class="stop-button">■ &nbsp; Vorlesen stoppen</button>
+<p class="listen-hint">Tippe auf den großen Play-Button und höre zu.</p>
+<nav class="reader-links" aria-label="Weitere Möglichkeiten">
+<button id="toggle-sections" class="text-link" aria-expanded="false" aria-controls="section-view">Arbeitskarte in Abschnitten vorlesen</button>
+<button id="toggle-settings" class="text-link" aria-expanded="false" aria-controls="reader-settings">Lesetempo & Einstellungen</button>
+<button id="next-code" class="text-link">Weiteren QR-Code scannen</button>
+</nav>
+<section id="section-view" class="reader-extra" aria-labelledby="section-title" hidden><h2 id="section-title">Deine Arbeitskarte in Abschnitten</h2><p class="hint">Höre dir genau den Abschnitt an, den du gerade brauchst.</p><div id="reading-text" class="reading-text"></div></section>
+<section id="reader-settings" class="reader-extra" aria-label="Vorleseeinstellungen" hidden><label class="tempo" for="rate">Lesetempo <output id="rate-value">0,9 ×</output><input id="rate" type="range" min="0.5" max="1.3" step="0.1" value="0.9"><span><small>Langsam</small><small>Schnell</small></span></label><label class="check"><input id="auto-speak" type="checkbox" checked> Nach dem Scannen vorlesen</label></section>
+</section>
 </div><div class="try"><span>Erst einmal ausprobieren?</span><button id="demo-short">Kurzen Text anhören</button><button id="demo-card">Arbeitskarte öffnen</button></div>
 </div>
+<section id="teacher-login" class="panel login-panel" aria-labelledby="login-title" hidden>
+<span class="eyebrow">LEHRKRÄFTEBEREICH</span>
+<h1 id="login-title">Bitte Kennwort eingeben</h1>
+<p>Zum Bearbeiten der Karten öffnest du hier deinen Arbeitsbereich.</p>
+<form id="teacher-login-form">
+<label for="teacher-password">Kennwort</label>
+<div class="password-row"><input id="teacher-password" type="password" autocomplete="current-password" required aria-describedby="login-error"><button id="show-password" type="button" aria-pressed="false" aria-controls="teacher-password">Anzeigen</button></div>
+<p id="login-error" class="login-error" role="alert"></p>
+<button id="teacher-unlock" class="primary wide" type="submit">Lehrkräftebereich öffnen</button>
+</form>
+<a class="login-back" href="#">← Zur Schüleransicht</a>
+</section>
 <section id="teacher" hidden>
-<div class="teacher-heading"><div><span class="eyebrow">DEIN LEHRKRÄFTEBEREICH</span><h1>Texte, die weiterhelfen.</h1><p>Ein Satz oder eine ganze Arbeitskarte – hier entsteht dein QR-Code.</p></div><a class="button" href="#">← Zur Schüleransicht</a></div>
-<div class="notice"><strong>Persönlicher Arbeitsbereich · Version 1</strong><p>Entwürfe werden in diesem Browser gespeichert. Für andere Geräte die Sammlung exportieren und als <b>cards.json</b> auf GitHub veröffentlichen. Dieser Bereich hat noch keine Anmeldung; nur veröffentlichte Inhalte sind für Schüler erreichbar.</p></div>
+<div class="teacher-heading"><div><span class="eyebrow">DEIN LEHRKRÄFTEBEREICH</span><h1>Texte, die weiterhelfen.</h1><p>Ein Satz oder eine ganze Arbeitskarte – hier entsteht dein QR-Code.</p></div><div class="teacher-heading-actions"><button id="teacher-lock" type="button">Bereich sperren</button><a class="button" href="#">← Zur Schüleransicht</a></div></div>
+<div class="notice"><strong>Persönlicher Arbeitsbereich</strong><p>Entwürfe werden in diesem Browser gespeichert. Für andere Geräte die Sammlung exportieren und als <b>cards.json</b> auf GitHub veröffentlichen. Der Zugang ist mit einer einfachen Kennwortabfrage gesperrt. Nur veröffentlichte Inhalte sind für Schüler erreichbar.</p></div>
 <div class="teacher-grid"><aside class="panel"><div class="step">DEINE SAMMLUNG</div><h2>Texte & Arbeitskarten</h2><button id="new-card" class="primary wide">+ Neuen Text anlegen</button><label for="search">Sammlung durchsuchen</label><input id="search" type="search" placeholder="Titel oder Fach suchen"><div id="card-list" class="card-list"></div><hr><button id="export" class="wide">↓ Sammlung exportieren</button><label class="file-button">Sammlung importieren<input id="import" type="file" accept="application/json,.json" hidden></label><p id="collection-state" class="hint"></p></aside>
 <div class="panel editor"><div class="step">DEIN TEXT · DEIN QR-CODE</div><div class="tabs" role="group" aria-label="QR-Code-Art"><button id="mode-saved" aria-pressed="true">Gespeicherter Text</button><button id="mode-quick" aria-pressed="false">Schneller QR-Code</button></div><p id="mode-help" class="hint">Später änderbar. Der gedruckte QR-Code bleibt gleich.</p><form id="edit-form"><label for="title">Titel</label><input id="title" required maxlength="150" placeholder="z. B. Die Sechskantschraube"><label for="category">Fach / Lernwerkstatt</label><input id="category" maxlength="100" placeholder="z. B. Werken"><label for="body">Text zum Vorlesen</label><textarea id="body" required maxlength="30000" rows="10" placeholder="Schreibe deinen Text hier. Eine Leerzeile beginnt einen neuen Abschnitt."></textarea><div class="text-meta"><span>Leerzeile = neuer Hörabschnitt</span><span id="char-count">0 Zeichen</span></div><div class="actions"><button id="save" class="primary" type="submit">Entwurf speichern</button><button id="preview" type="button">▶ Probehören</button><button id="delete-card" class="danger" type="button" hidden>Karte löschen</button></div></form><p id="save-state" class="hint" role="status"></p><button id="undo-delete" type="button" hidden>↶ Löschen rückgängig machen</button><hr><label for="base-url">Veröffentlichte App-Adresse</label><input id="base-url" type="url" placeholder="https://rohie2000.github.io/JMS-Tools/QR-Vorleser/"><p class="hint">Vor dem ersten Ausdruck prüfen. Diese Adresse muss später bestehen bleiben.</p><button id="make-qr" class="primary">▦ QR-Code erstellen</button><div id="qr-result" hidden><div class="qr-layout"><canvas id="qr-canvas" aria-label="Erstellter QR-Code"></canvas><div><h3 id="qr-title"></h3><p id="qr-note"></p><a id="qr-target" target="_blank" rel="noopener">Schüleransicht öffnen ↗</a></div></div><div class="actions"><button id="download-qr">↓ QR-Code als PNG</button><button id="print-qr">QR-Code drucken</button></div></div></div></div>
 </section>
