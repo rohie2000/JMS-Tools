@@ -1,5 +1,5 @@
 import QrScanner from './vendor/qr-scanner.min.js';
-import { checkTeacherPassword } from './teacher-access.js';
+import { checkTeacherPassword } from './teacher-access.js?v=2';
 let teacherUnlocked = false;
 import { mergeCollection, readDeletedIds } from './collection.js?v=2';
 const $ = id => document.getElementById(id);
