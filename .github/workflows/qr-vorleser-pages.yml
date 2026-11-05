@@ -1,0 +1,41 @@
+name: QR-Vorleser · GitHub Pages
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'QR-Vorleser/**'
+      - '.github/workflows/qr-vorleser-pages.yml'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: qr-vorleser-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/configure-pages@v5
+      - name: Website vorbereiten
+        run: |
+          mkdir -p _site/QR-Vorleser
+          cp -R QR-Vorleser/. _site/QR-Vorleser/
+          rm -f _site/QR-Vorleser/README.md
+          touch _site/.nojekyll
+          printf '<!doctype html><html lang="de"><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=QR-Vorleser/"><title>QR-Vorleser</title><a href="QR-Vorleser/">QR-Vorleser öffnen</a></html>' > _site/index.html
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+      - name: Veröffentlichen
+        id: deployment
+        uses: actions/deploy-pages@v4
